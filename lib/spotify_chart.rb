@@ -1,24 +1,33 @@
 require 'json'
 require 'open-uri'
+require 'pry'
 
 class SpotifyChart
 
   attr_reader :base_url
 
   def initialize
-    @base_url = "?"
+    @base_url = "http://charts.spotify.com/api/charts/"
   end
 
   def get_url(preference, region)
-    # return a string that is the base url + / + preference + / + region + / + latest
+    url = "#{@base_url}#{preference}/#{region}/latest"
+
   end
 
   def get_json(url)
+    spotify_hash = JSON.load(open(url))
     # load json given a url here
     # refer to the references if you have questions about this
   end
 
   def fetch_track_album_artist(music_hash)
+   track_name = music_hash["tracks"][0]["track_name"]
+   artist_name = music_hash["tracks"][0]["artist_name"]
+   album_name = music_hash["tracks"][0]["album_name"]
+
+   track = "'#{track_name}' by #{artist_name} from the album #{album_name}"
+  
     # example music_hash:
     # {  
     #   "tracks" => [  
@@ -46,6 +55,9 @@ class SpotifyChart
 
 
   def most_streamed(region)
+    url = get_url('most_streamed',region)
+    fetch_track_album_artist(get_json(url))
+
     # call no get_url here, where preference is the string 'most_streamed',
     # and set it equal to a variable
 
@@ -56,6 +68,9 @@ class SpotifyChart
   end
 
   def most_shared(region)
+    url = get_url('most_shared', region)
+    fetch_track_album_artist(get_json(url))
+
     # call no get_url here, where preference is the string 'most_shared',
     # and set it equal to a variable
 
